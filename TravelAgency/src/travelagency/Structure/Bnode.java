@@ -60,7 +60,7 @@ public class Bnode {
     }
 
     public void addAllDestiny(LinkedList<destiny> destinyIn) {
-        this.destinys.addAll(destinys);
+        this.destinys.addAll(destinyIn);
         if (this.destinys.size() > 1) {
             organize.bubleSortDestinys(destinys);
         }

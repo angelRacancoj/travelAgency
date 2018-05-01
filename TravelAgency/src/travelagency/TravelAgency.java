@@ -34,7 +34,7 @@ public class TravelAgency {
             myTree.addNode(2, "L");
             myTree.addNode(3, "M");
             myTree.addNode(4, "N");
-//            myTree.addNode(5, "I");
+            myTree.addNode(5, "I");
         } catch (errorException e) {
             System.out.println(e);
         }

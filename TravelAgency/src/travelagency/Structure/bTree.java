@@ -121,10 +121,10 @@ public class bTree {
             destiny newDestiny = new destiny(code, name);
             Bnode aux = new Bnode(order);
             aux.destinys.add(newDestiny);
-            if (root == null) {
+            if (root.isDestinyListEmpty()) {
                 root.addDestiny(newDestiny);
             } else {
-                root = addNode(root, aux, code, 0);
+                addNodeEmpty(root, aux, code, 0);
             }
         } else {
             throw new errorException("Node: " + code + ", " + name + " already exist");
@@ -183,9 +183,10 @@ public class bTree {
                         nodeIn.deleteBnode(nodePosicion);
                         AddOrDivideEj(nodeIn, auxBnodeA);
                     }
+                    
 
-                } else if ((nodeIn.destinys.size() > nodePosicion) && (nodeIn.getDestiny(nodePosicion + 1) != null)
-                        && (code > nodeIn.getDestiny(nodePosicion).getCode()) && (code > nodeIn.getDestiny(nodePosicion + 1).getCode())) {
+                } else if ((nodeIn.destinys.size() > nodePosicion)&& (code > nodeIn.getDestiny(nodePosicion).getCode()) 
+                        && (code > nodeIn.getDestiny(nodePosicion + 1).getCode())&& (nodeIn.getDestiny(nodePosicion + 1) != null)) {
                     addNodeEmpty(nodeIn, newDestiny, code, (nodePosicion + 1));
 
                 } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
@@ -308,7 +309,7 @@ public class bTree {
             Bnode auxBnodeA = new Bnode(size);
             Bnode auxBnodeB = new Bnode(size);
 
-            auxBnodeRoot.destinys.add(help.get(middle + 1));
+            auxBnodeRoot.destinys.add(help.get(middle));
 
             for (int i = 0; i < middle; i++) {
                 auxBnodeA.addDestiny(help.get(i));
@@ -352,7 +353,9 @@ public class bTree {
                 auxBnodeRoot.addBnode(auxBnodeB);
 
                 nodeIn.nodes.clear();
+                nodeIn.destinys.clear();
                 nodeIn.addBnode(auxBnodeRoot.getNodes());
+                nodeIn.addAllDestiny(auxBnodeRoot.getDestinys());
             }
         }
     }
