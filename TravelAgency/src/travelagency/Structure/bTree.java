@@ -20,8 +20,6 @@ public class bTree {
     Bnode root;
 
     Order organize;
-    private destiny middleDest = new destiny();
-    private Bnode newBnode;
     int nodePosicion = 0;
 
     public bTree() {
@@ -33,7 +31,6 @@ public class bTree {
     public bTree(int maxSize) {
         this.order = maxSize;
         this.root = new Bnode(maxSize);
-        this.newBnode = new Bnode(maxSize);
         this.organize = new Order();
     }
 
@@ -50,13 +47,30 @@ public class bTree {
         }
     }
 
-    public boolean existNode(int code) {
+    public boolean existNode(int code) throws errorException {
         nodePosicion = 0;
         if (!root.isDestinyListEmpty()) {
-            return (RecursiveExistNode(root, code, 0) != null);
+            return (RecursiveExistNodeEj(root, code, 0) != null);
         } else {
             return false;
         }
+    }
+
+    public void addNode(int code, String name) throws errorException {
+
+        destiny newDestiny = new destiny(code, name);
+        Bnode aux = new Bnode(order);
+        aux.destinys.add(newDestiny);
+        if (root.isDestinyListEmpty()) {
+            root.addDestiny(newDestiny);
+        } else {
+            if (!existNode(code)) {
+                addNodeEmpty(root, aux, code, 0);
+            } else {
+                throw new errorException("Node: " + code + ", " + name + " already exist");
+            }
+        }
+
     }
 
     // modificar la busqueda similar al RecursiveFindNode y ver si es necesario solicitar verificar que el tamaño del arreglo sea mayor a la posicion
@@ -80,84 +94,39 @@ public class bTree {
         }
     }
 
-    public Bnode findNode(int code) throws errorException {
-        nodePosicion = 0;
-        if (root != null) {
-            return RecursiveFindNode(root, code, 0);
-        } else {
-            return null;
-        }
-    }
-
-    private Bnode RecursiveFindNode(Bnode nodeIn, int code, int nodePosicion) throws errorException {
-        if (!(nodePosicion > order - 1) && (nodeIn.destinys.size() <= nodePosicion)) {
-            if (nodeIn.getNodes().isEmpty()) {
-                return nodeIn;
-            } else {
-                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
-                    return RecursiveFindNode(nodeIn.getBnode(nodePosicion), code, 0);
-                } else if ((nodeIn.getDestiny(nodePosicion + 1) != null) && (code > nodeIn.getDestiny(nodePosicion).getCode()) && (code > nodeIn.getDestiny(nodePosicion + 1).getCode())) {
-                    return RecursiveFindNode(nodeIn, code, nodePosicion + 1);
-                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
-                    return RecursiveFindNode(nodeIn.getBnode(nodePosicion + 1), code, 0);
-                } else {
-                    throw new errorException("error searching the node");
-                }
-            }
-        } else {
-            throw new errorException("error, node doesn't exist");
-        }
-    }
-
-    /**
-     *
-     * @param code
-     * @param name
-     * @return
-     * @throws errorException
-     */
-    public void addNode(int code, String name) throws errorException {
-        if (!existNode(code)) {
-            destiny newDestiny = new destiny(code, name);
-            Bnode aux = new Bnode(order);
-            aux.destinys.add(newDestiny);
-            if (root.isDestinyListEmpty()) {
-                root.addDestiny(newDestiny);
-            } else {
-                addNodeEmpty(root, aux, code, 0);
-            }
-        } else {
-            throw new errorException("Node: " + code + ", " + name + " already exist");
-        }
-    }
-    //enviar los datos como paramentros y almancenar cuando se detecte que el hijo ya tiene 4 hijos
-
-    private Bnode addNode(Bnode nodeIn, Bnode newDestiny, int code, int nodePosicion) throws errorException {
+    private destiny RecursiveExistNodeEj(Bnode nodeIn, int code, int nodePosicion) throws errorException {
 
         if (!(nodePosicion > order - 1)) {
-            if (nodeIn.isBnodesListEmpty()) {
-                nodeIn = AddOrDivide(nodeIn, newDestiny);
-                return nodeIn;
-            } else {
-                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
-                    Bnode auxA = nodeIn;
-                    Bnode aux = addNode(nodeIn.getBnode(nodePosicion), newDestiny, code, 0);
-                    if ((aux.getDestinys().size() == 1)) {
-                        return AddOrDivide(nodeIn, aux);
-                    } else {
-                        return root;
+            if (nodeIn.getDestiny(nodePosicion).getCode() == code) {
+                return nodeIn.getDestiny(nodePosicion);
+            } else if (nodeIn.isBnodesListEmpty()) {
+                boolean found = false;
+                int i = 0;
+                do {
+                    if (nodeIn.getDestiny(i).getCode() == code) {
+                        found = true;
+                        return nodeIn.getDestiny(i);
                     }
-                } else if ((nodeIn.destinys.size() > nodePosicion) && (nodeIn.getDestiny(nodePosicion + 1) != null)
-                        && (code > nodeIn.getDestiny(nodePosicion).getCode()) && (code > nodeIn.getDestiny(nodePosicion + 1).getCode())) {
-                    return addNode(nodeIn, newDestiny, code, (nodePosicion + 1));
+                    i++;
+                } while (!found && (i < nodeIn.destinySize()));
+                return null;
+            } else {
+                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn == root) && (nodeIn.getDestinys().size() == 1) && (!nodeIn.isBnodesListEmpty())) {
+                    return RecursiveExistNodeEj(nodeIn.getBnode(nodePosicion), code, 0);
+
+                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn == root) && (nodeIn.getDestinys().size() == 1) && (!nodeIn.isBnodesListEmpty())) {
+                    return RecursiveExistNodeEj(nodeIn.getBnode(nodePosicion + 1), code, 0);
+
+                } else if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
+                    return RecursiveExistNodeEj(nodeIn.getBnode(nodePosicion), code, 0);
+
+                } else if (((nodeIn.destinys.size() - 1) > nodePosicion) && (code > nodeIn.getDestiny(nodePosicion).getCode())
+                        && (code > nodeIn.getDestiny(nodePosicion + 1).getCode()) && (nodeIn.getDestiny(nodePosicion + 1) != null)) {
+                    return RecursiveExistNodeEj(nodeIn, code, nodePosicion + 1);
 
                 } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
-                    Bnode aux = addNode(nodeIn.getBnode(nodePosicion), newDestiny, code, 0);
-                    if ((aux.getDestinys().size() == 1)) {
-                        return AddOrDivide(nodeIn, aux);
-                    } else {
-                        return root;
-                    }
+                    return RecursiveExistNodeEj(nodeIn.getBnode(nodePosicion + 1), code, 0);
+
                 } else {
                     throw new errorException("error adding the node");
                 }
@@ -167,13 +136,14 @@ public class bTree {
         }
     }
 
+    //enviar los datos como paramentros y almancenar cuando se detecte que el hijo ya tiene 4 hijos
     private void addNodeEmpty(Bnode nodeIn, Bnode newDestiny, int code, int nodePosicion) throws errorException {
 
         if (!(nodePosicion > order - 1)) {
             if (nodeIn.isBnodesListEmpty()) {
                 AddOrDivideEj(nodeIn, newDestiny);
             } else {
-                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
+                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn == root) && (nodeIn.getDestinys().size() == 1)) {
                     addNodeEmpty(nodeIn.getBnode(nodePosicion), newDestiny, code, 0);
                     if ((nodeIn.getBnode(nodePosicion).destinySize() == 1)) {
                         //add the split tree
@@ -183,13 +153,17 @@ public class bTree {
                         nodeIn.deleteBnode(nodePosicion);
                         AddOrDivideEj(nodeIn, auxBnodeA);
                     }
-                    
+                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn == root) && (nodeIn.getDestinys().size() == 1)) {
+                    addNodeEmpty(nodeIn.getBnode(nodePosicion + 1), newDestiny, code, 0);
+                    if ((nodeIn.getBnode(nodePosicion + 1).destinySize() == 1)) {
+                        //add the split tree
+                        Bnode auxBnodeA;
+                        auxBnodeA = nodeIn.getBnode(nodePosicion + 1);
 
-                } else if ((nodeIn.destinys.size() > nodePosicion)&& (code > nodeIn.getDestiny(nodePosicion).getCode()) 
-                        && (code > nodeIn.getDestiny(nodePosicion + 1).getCode())&& (nodeIn.getDestiny(nodePosicion + 1) != null)) {
-                    addNodeEmpty(nodeIn, newDestiny, code, (nodePosicion + 1));
-
-                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
+                        nodeIn.deleteBnode(nodePosicion + 1);
+                        AddOrDivideEj(nodeIn, auxBnodeA);
+                    }
+                } else if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
                     addNodeEmpty(nodeIn.getBnode(nodePosicion), newDestiny, code, 0);
                     if ((nodeIn.getBnode(nodePosicion).destinySize() == 1)) {
                         //add the split tree
@@ -197,6 +171,21 @@ public class bTree {
                         auxBnodeA = nodeIn.getBnode(nodePosicion);
 
                         nodeIn.deleteBnode(nodePosicion);
+                        AddOrDivideEj(nodeIn, auxBnodeA);
+                    }
+
+                } else if (((nodeIn.destinys.size() - 1) > nodePosicion) && (code > nodeIn.getDestiny(nodePosicion).getCode())
+                        && (code > nodeIn.getDestiny(nodePosicion + 1).getCode()) && (nodeIn.getDestiny(nodePosicion + 1) != null)) {
+                    addNodeEmpty(nodeIn, newDestiny, code, (nodePosicion + 1));
+
+                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
+                    addNodeEmpty(nodeIn.getBnode(nodePosicion + 1), newDestiny, code, 0);
+                    if ((nodeIn.getBnode(nodePosicion + 1).destinySize() == 1)) {
+                        //add the split tree
+                        Bnode auxBnodeA;
+                        auxBnodeA = nodeIn.getBnode(nodePosicion + 1);
+
+                        nodeIn.deleteBnode(nodePosicion + 1);
                         AddOrDivideEj(nodeIn, auxBnodeA);
                     }
                 } else {
@@ -205,17 +194,6 @@ public class bTree {
             }
         } else {
             throw new errorException("error, enable to add the node");
-        }
-    }
-
-    private Bnode AddOrDivide(Bnode nodeIn, Bnode newDestiny) throws errorException {
-        if (nodeIn.nodeFull()) {
-            return dividedAndAddNode(nodeIn, newDestiny);
-        } else {
-
-            nodeIn.addDestiny(newDestiny.getDestiny(0));
-            nodeIn.addBnode(newDestiny.getNodes());
-            return nodeIn;
         }
     }
 
@@ -227,69 +205,6 @@ public class bTree {
             nodeIn.addDestiny(newDestiny.getDestiny(0));
             nodeIn.addBnode(newDestiny.getNodes());
         }
-    }
-
-    private Bnode dividedAndAddNode(Bnode nodeIn, Bnode newDestiny) {
-
-        if (nodeIn != null) {
-            int size = nodeIn.getMaxSize();
-            int middle = 0;
-
-            LinkedList<destiny> help = new LinkedList<>();
-            help.addAll(nodeIn.getDestinys());
-            help.add(newDestiny.getDestiny(0));
-            organize.bubleSortDestinys(help);
-
-            middle = ((help.size() / 2));
-
-            Bnode auxBnodeRoot = new Bnode(size);
-            Bnode auxBnodeA = new Bnode(size);
-            Bnode auxBnodeB = new Bnode(size);
-
-            auxBnodeRoot.destinys.add(help.get(middle + 1));
-
-            for (int i = 0; i < middle; i++) {
-                auxBnodeA.addDestiny(help.get(i));
-            }
-
-            for (int j = (middle + 1); j < help.size(); j++) {
-                auxBnodeB.addDestiny(help.get(j));
-            }
-
-            if (!newDestiny.isBnodesListEmpty()) {
-                LinkedList<Bnode> Bhelp = new LinkedList<>();
-                Bhelp.addAll(newDestiny.getNodes());
-                Bhelp.add(auxBnodeA);
-                Bhelp.add(auxBnodeB);
-                organize.bubleSortBnodes(Bhelp);
-
-                Bnode auxBnodeC = new Bnode(size);
-                Bnode auxBnodeD = new Bnode(size);
-
-                int Bmiddle = ((Bhelp.size() % 2) - 1);
-
-                for (int k = 0; k <= Bmiddle; k++) {
-                    auxBnodeC.addBnode(Bhelp.get(k));
-                }
-
-                for (int l = (Bmiddle + 1); l < Bhelp.size(); l++) {
-                    auxBnodeC.addBnode(Bhelp.get(l));
-                }
-
-                auxBnodeRoot.addBnode(auxBnodeC);
-                auxBnodeRoot.addBnode(auxBnodeD);
-
-                return auxBnodeRoot;
-
-            } else {
-                auxBnodeRoot.addBnode(auxBnodeA);
-                auxBnodeRoot.addBnode(auxBnodeB);
-                return auxBnodeRoot;
-            }
-        } else {
-            return null;
-        }
-
     }
 
     private void dividedAndAddNodeEj(Bnode nodeIn, Bnode newDestiny) throws errorException {
@@ -322,25 +237,27 @@ public class bTree {
             if (!newDestiny.isBnodesListEmpty()) {
                 LinkedList<Bnode> Bhelp = new LinkedList<>();
                 Bhelp.addAll(newDestiny.getNodes());
-                Bhelp.add(auxBnodeA);
-                Bhelp.add(auxBnodeB);
+                Bhelp.addAll(nodeIn.getNodes());
                 organize.bubleSortBnodes(Bhelp);
 
                 Bnode auxBnodeC = new Bnode(size);
                 Bnode auxBnodeD = new Bnode(size);
 
-                int Bmiddle = ((Bhelp.size() % 2) - 1);
+                int Bmiddle = ((Bhelp.size() / 2));
 
-                for (int k = 0; k <= Bmiddle; k++) {
+                for (int k = 0; k < Bmiddle; k++) {
                     auxBnodeC.addBnode(Bhelp.get(k));
                 }
 
-                for (int l = (Bmiddle + 1); l < Bhelp.size(); l++) {
-                    auxBnodeC.addBnode(Bhelp.get(l));
+                for (int l = (Bmiddle); l < Bhelp.size(); l++) {
+                    auxBnodeD.addBnode(Bhelp.get(l));
                 }
 
-                auxBnodeRoot.addBnode(auxBnodeC);
-                auxBnodeRoot.addBnode(auxBnodeD);
+                auxBnodeA.addBnode(auxBnodeC.getNodes());
+                auxBnodeB.addBnode(auxBnodeD.getNodes());
+
+                auxBnodeRoot.addBnode(auxBnodeA);
+                auxBnodeRoot.addBnode(auxBnodeB);
 
                 nodeIn.destinys.clear();
                 nodeIn.nodes.clear();
@@ -381,27 +298,3 @@ public class bTree {
     }
 
 }
-
-/*        if (!(nodePosicion > order - 1)) {
-//            if (nodeIn.getNodes().isEmpty()) {
-//                return nodeIn;
-//            } else {
-//                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
-//                    return RecursiveFindNode(nodeIn.getBnode(nodePosicion), code, 0);
-//                } else if (nodeIn.getDestiny(nodePosicion + 1) != null) {
-//                    if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && code > nodeIn.getDestiny(nodePosicion + 1).getCode()) {
-//                        return RecursiveFindNode(nodeIn, code, nodePosicion + 1);
-//                    } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
-//                        return RecursiveFindNode(nodeIn.getBnode(nodePosicion + 1), code, 0);
-//                    } else {
-//                        return null;
-//                    }
-//                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
-//                    return RecursiveFindNode(nodeIn.getBnode(nodePosicion + 1), code, 0);
-//                } else {
-//                    return null;
-//                }
-//            }
-//        } else {
-//            return null;
-        }*/

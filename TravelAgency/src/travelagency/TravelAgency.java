@@ -25,7 +25,7 @@ public class TravelAgency {
             myTree.addNode(8, "C");
             myTree.addNode(15, "D");
             myTree.addNode(41, "E");
-            myTree.addNode(7, "F");
+            myTree.addNode(49, "F");
             myTree.addNode(71, "G");
             myTree.addNode(90, "H");
             myTree.addNode(5, "I");
@@ -34,7 +34,21 @@ public class TravelAgency {
             myTree.addNode(2, "L");
             myTree.addNode(3, "M");
             myTree.addNode(4, "N");
-            myTree.addNode(5, "I");
+            myTree.addNode(7, "O");
+            myTree.addNode(11, "P");
+            myTree.addNode(19, "Q");
+            myTree.addNode(28, "R");
+            myTree.addNode(60, "S");
+            myTree.addNode(66, "T");
+            myTree.addNode(100, "U");
+            myTree.addNode(14, "V");
+            myTree.addNode(62, "W");
+            myTree.addNode(50, "X");
+            myTree.addNode(33, "Y");
+            myTree.addNode(35, "Z");
+            myTree.addNode(95, "AA");
+            myTree.addNode(99, "AB");
+            myTree.addNode(80, "AC");
         } catch (errorException e) {
             System.out.println(e);
         }
