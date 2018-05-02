@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/Structure/AdyMatrix.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/FileManager/Order.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/objects/route.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/objects/destiny.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/Structure/bTree.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/Structure/Bnode.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/exceptions/errorException.java</file>
-            <file>file:/home/angel/NetBeansProjects/TravelAgency/src/travelagency/TravelAgency.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelagency/TravelAgency.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelagency/objects/destiny.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelagency/Structure/bTree.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelManager/travelAndRoute.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelagency/Structure/Bnode.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/travelagency/objects/route.java</file>
+            <file>file:/home/angel/NetBeansProjects/travelAgency/TravelAgency/src/FileManager/Order.java</file>
         </group>
     </open-files>
 </project-private>

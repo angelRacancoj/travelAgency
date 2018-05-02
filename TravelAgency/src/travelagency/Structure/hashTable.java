@@ -9,6 +9,6 @@ package travelagency.Structure;
  *
  * @author angel
  */
-public class AdyMatrix {
+public class hashTable {
 
 }

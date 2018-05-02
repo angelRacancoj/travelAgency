@@ -5,6 +5,7 @@
  */
 package travelagency;
 
+import travelManager.travelAndRoute;
 import travelagency.Structure.bTree;
 import travelagency.exceptions.errorException;
 
@@ -18,7 +19,8 @@ public class TravelAgency {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        bTree myTree = new bTree(5);
+        travelAndRoute newTR = new travelAndRoute();
+        bTree myTree = new bTree(5, newTR);
         try {
             myTree.addNode(25, "A");
             myTree.addNode(31, "B");
@@ -53,7 +55,46 @@ public class TravelAgency {
             System.out.println(e);
         }
 
+        try {
+            myTree.addTR(25, 31, 250.25, 50);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(1, 2, 150, 180);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(11, 2, 75.9, 60);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(100, 31, 250.25, 50);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(25, 2, 185, 120);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(11, 99, 190, 75);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+        try {
+            myTree.addTR(4, 7, 100.25, 120);
+        } catch (errorException e) {
+            System.out.println(e);
+        }
+
         myTree.printBtree();
+        System.out.println(">>>>>>> Nodes: " + myTree.getNumNodes() + " <<<<<<<<<");
+
+        newTR.printMatrix();
     }
 
 }

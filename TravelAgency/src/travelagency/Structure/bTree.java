@@ -7,6 +7,7 @@ package travelagency.Structure;
 
 import FileManager.Order;
 import java.util.LinkedList;
+import travelManager.travelAndRoute;
 import travelagency.exceptions.errorException;
 import travelagency.objects.destiny;
 
@@ -16,26 +17,35 @@ import travelagency.objects.destiny;
  */
 public class bTree {
 
+    int numNodes;
     int order;
     Bnode root;
 
+    travelAndRoute travelList;
     Order organize;
     int nodePosicion = 0;
 
-    public bTree() {
-        this.order = 0;
-        this.root = new Bnode(order);
-        this.organize = new Order();
-    }
-
-    public bTree(int maxSize) {
+    public bTree(int maxSize, travelAndRoute newTR) {
         this.order = maxSize;
         this.root = new Bnode(maxSize);
         this.organize = new Order();
+        numNodes = 0;
+        this.travelList = newTR;
     }
 
     public void printBtree() {
         printTreeInorder(this.root);
+    }
+
+    public void addTR(int code1, int code2, double price, int time) throws errorException {
+        destiny auxA = RecursiveExistNodeEj(root, code1, 0);
+        destiny auxB = RecursiveExistNodeEj(root, code2, 0);
+
+        if ((auxA != null) && (auxB != null)) {
+            travelList.setRoute(auxA.getPosicion(), auxB.getPosicion(), code1, code2, price, time);
+        } else {
+            throw new errorException("Invalid codes: " + code1 + ", " + code2);
+        }
     }
 
     private void printTreeInorder(Bnode readNode) {
@@ -58,14 +68,19 @@ public class bTree {
 
     public void addNode(int code, String name) throws errorException {
 
-        destiny newDestiny = new destiny(code, name);
+        destiny newDestiny = new destiny(code, name, 0);
         Bnode aux = new Bnode(order);
         aux.destinys.add(newDestiny);
         if (root.isDestinyListEmpty()) {
             root.addDestiny(newDestiny);
+            travelList.addRows(numNodes);
+            numNodes++;
         } else {
             if (!existNode(code)) {
+                newDestiny.setPosicion(numNodes);
                 addNodeEmpty(root, aux, code, 0);
+                travelList.addRows(numNodes);
+                numNodes++;
             } else {
                 throw new errorException("Node: " + code + ", " + name + " already exist");
             }
@@ -73,28 +88,16 @@ public class bTree {
 
     }
 
-    // modificar la busqueda similar al RecursiveFindNode y ver si es necesario solicitar verificar que el tamaño del arreglo sea mayor a la posicion
-    private destiny RecursiveExistNode(Bnode nodeIn, int code, int nodePosicion) {
-        if (!(nodePosicion > order - 1) && (nodeIn.destinys.size() <= nodePosicion)) {
-            if (nodeIn.getDestiny(nodePosicion).getCode() == code) {
-                return nodeIn.getDestiny(nodePosicion);
-            } else if ((nodeIn.getDestiny(nodePosicion).getCode() != code) && (code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
-                if ((code < nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion) != null)) {
-                    return RecursiveExistNode(nodeIn.getBnode(nodePosicion), code, 0);
-                } else if ((code > nodeIn.getDestiny(nodePosicion).getCode()) && (nodeIn.getBnode(nodePosicion + 1) != null)) {
-                    return RecursiveExistNode(nodeIn.getBnode(nodePosicion + 1), code, 0);
-                } else {
-                    return null;
-                }
-            } else {
-                return RecursiveExistNode(nodeIn, code, nodePosicion + 1);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private destiny RecursiveExistNodeEj(Bnode nodeIn, int code, int nodePosicion) throws errorException {
+    /**
+     * this method find the destiny by a recursive way
+     *
+     * @param nodeIn
+     * @param code
+     * @param nodePosicion
+     * @return
+     * @throws errorException
+     */
+    public destiny RecursiveExistNodeEj(Bnode nodeIn, int code, int nodePosicion) throws errorException {
 
         if (!(nodePosicion > order - 1)) {
             if (nodeIn.getDestiny(nodePosicion).getCode() == code) {
@@ -104,7 +107,6 @@ public class bTree {
                 int i = 0;
                 do {
                     if (nodeIn.getDestiny(i).getCode() == code) {
-                        found = true;
                         return nodeIn.getDestiny(i);
                     }
                     i++;
@@ -295,6 +297,14 @@ public class bTree {
 
     void setOrder(int newOrder) {
         this.order = newOrder;
+    }
+
+    public int getNumNodes() {
+        return numNodes;
+    }
+
+    public void setNumNodes(int numNodes) {
+        this.numNodes = numNodes;
     }
 
 }
