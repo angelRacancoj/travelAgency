@@ -42,7 +42,7 @@ public class bTree {
         destiny auxB = RecursiveExistNodeEj(root, code2, 0);
 
         if ((auxA != null) && (auxB != null)) {
-            travelList.setRoute(auxA.getPosicion(), auxB.getPosicion(), code1, code2, price, time);
+            travelList.setRoute(auxA, auxB, code1, code2, price, time);
         } else {
             throw new errorException("Invalid codes: " + code1 + ", " + code2);
         }

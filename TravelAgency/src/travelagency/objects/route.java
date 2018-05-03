@@ -11,16 +11,16 @@ package travelagency.objects;
  */
 public class route {
 
-    int code1;
-    int code2;
+    destiny destinyA;
+    destiny destinyB;
     int px;
     int py;
     double price;
     int minutes;
 
-    public route(int code1, int code2, int px, int py, double price, int minutes) {
-        this.code1 = code1;
-        this.code2 = code2;
+    public route(destiny destA, destiny destB, int px, int py, double price, int minutes) {
+        this.destinyA = destA;
+        this.destinyB = destB;
         this.px = px;
         this.py = py;
         this.price = price;
@@ -29,7 +29,7 @@ public class route {
 
     public void printRoute() {
         if ((price > 0) && (minutes > 0)) {
-            System.out.println("Code 1: " + this.code1 + "\tCode 2: " + this.code2 + "\tPx: " + this.px + "\tPy: " + this.py + "\tPrize: " + this.price + "\tTrip time: " + this.minutes);
+            System.out.println("Code 1: " + this.destinyA.getCode() + "\tCode 2: " + this.destinyB.getCode() + "\tPx: " + this.px + "\tPy: " + this.py + "\tPrize: " + this.price + "\tTrip time: " + this.minutes);
             System.out.println("<^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^> <^>");
         }
     }
@@ -37,20 +37,20 @@ public class route {
     public route() {
     }
 
-    public int getCode1() {
-        return code1;
+    public destiny getDestinyA() {
+        return destinyA;
     }
 
-    public void setCode1(int code1) {
-        this.code1 = code1;
+    public void setDestinyA(destiny destinyA) {
+        this.destinyA = destinyA;
     }
 
-    public int getCode2() {
-        return code2;
+    public destiny getDestinyB() {
+        return destinyB;
     }
 
-    public void setCode2(int code2) {
-        this.code2 = code2;
+    public void setDestinyB(destiny destinyB) {
+        this.destinyB = destinyB;
     }
 
     public double getPrice() {

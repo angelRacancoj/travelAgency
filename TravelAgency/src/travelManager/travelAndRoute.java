@@ -2,6 +2,7 @@ package travelManager;
 
 import java.util.LinkedList;
 import travelagency.exceptions.errorException;
+import travelagency.objects.destiny;
 import travelagency.objects.route;
 
 /**
@@ -42,20 +43,22 @@ public class travelAndRoute {
     }
 
     // revisar xq lo agrega los datos
-    public void setRoute(int code1, int code2, int px, int py, double prize, int minute) throws errorException {
+    public void setRoute(destiny destA, destiny destB, int px, int py, double prize, int minute) throws errorException {
+        int code1 = destA.getCode();
+        int code2 = destB.getCode();
+
         if ((code1 < adyacentMatrix.size())) {
             if (code2 < adyacentMatrix.get(code1).size()) {
                 if ((prize != 0) && (minute != 0)) {
-                    adyacentMatrix.get(code1).get(code2).setCode1(code1);
-                    adyacentMatrix.get(code1).get(code2).setCode2(code2);
+                    adyacentMatrix.get(code1).get(code2).setDestinyA(destA);
+                    adyacentMatrix.get(code1).get(code2).setDestinyB(destB);
                     adyacentMatrix.get(code1).get(code2).setPx(px);
                     adyacentMatrix.get(code1).get(code2).setPy(py);
-                    adyacentMatrix.get(code1).get(code2).setCode2(code2);
                     adyacentMatrix.get(code1).get(code2).setMinutes(minute);
                     adyacentMatrix.get(code1).get(code2).setPrice(prize);
 
-                    adyacentMatrix.get(code2).get(code1).setCode1(code2);
-                    adyacentMatrix.get(code2).get(code1).setCode2(code1);
+                    adyacentMatrix.get(code2).get(code1).setDestinyA(destB);
+                    adyacentMatrix.get(code2).get(code1).setDestinyB(destA);
                     adyacentMatrix.get(code2).get(code1).setPx(py);
                     adyacentMatrix.get(code2).get(code1).setPy(px);
                     adyacentMatrix.get(code2).get(code1).setMinutes(minute);
@@ -75,15 +78,15 @@ public class travelAndRoute {
         if ((code1 < adyacentMatrix.size())) {
             if (code2 < adyacentMatrix.get(code1).size()) {
                 if ((prize != 0) && (minute != 0)) {
-                    adyacentMatrix.get(code1).get(code2).setCode1(0);
-                    adyacentMatrix.get(code1).get(code2).setCode2(0);
+                    adyacentMatrix.get(code1).get(code2).setDestinyA(new destiny());
+                    adyacentMatrix.get(code1).get(code2).setDestinyB(new destiny());
                     adyacentMatrix.get(code1).get(code2).setPx(0);
                     adyacentMatrix.get(code1).get(code2).setPy(0);
                     adyacentMatrix.get(code1).get(code2).setMinutes(0);
                     adyacentMatrix.get(code1).get(code2).setPrice(0);
 
-                    adyacentMatrix.get(code2).get(code1).setCode1(0);
-                    adyacentMatrix.get(code2).get(code1).setCode2(0);
+                    adyacentMatrix.get(code2).get(code1).setDestinyA(new destiny());
+                    adyacentMatrix.get(code2).get(code1).setDestinyB(new destiny());
                     adyacentMatrix.get(code2).get(code1).setPx(0);
                     adyacentMatrix.get(code2).get(code1).setPy(0);
                     adyacentMatrix.get(code2).get(code1).setMinutes(0);

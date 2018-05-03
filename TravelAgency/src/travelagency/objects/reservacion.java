@@ -39,6 +39,19 @@ public class reservacion {
         this.route1 = route1;
     }
 
+    public reservacion() {
+        this.clientName = "";
+        this.noReservacion = 0;
+    }
+
+    public void cleanReservacion() {
+        this.clientName = "";
+        this.noReservacion = 0;
+        this.route1 = null;
+        this.route2 = null;
+        this.route3 = null;
+    }
+
     public String getClientName() {
         return clientName;
     }
