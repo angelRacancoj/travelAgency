@@ -5,9 +5,14 @@
  */
 package frontIn;
 
+import FileManager.Lexer;
+import FileManager.ManejadorArchivo;
+import FileManager.parser;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import travelManager.travelAndRoute;
 import travelagency.Structure.bTree;
@@ -23,13 +28,23 @@ public class Principal extends javax.swing.JFrame {
     bTree myTree;
     hashTable newHT;
     newDestiny newDest;
+    newRoute newRout;
+
+    ManejadorArchivo files;
+    Lexer myLex;
+    parser myParse;
+    String path;
 
     public Principal(travelAndRoute newTravel, bTree newBtree, hashTable newHT) {
         this.newTR = newTravel;
         this.myTree = newBtree;
         this.newHT = newHT;
-        this.newDest = new newDestiny(myTree);
         initComponents();
+        this.newDest = new newDestiny(myTree);
+        this.newRout = new newRoute(myTree);
+        this.files = new ManejadorArchivo();
+        this.myLex = new Lexer(new StringReader(""));
+        this.myParse = new parser(myLex, myTree);
 
     }
 
@@ -48,10 +63,12 @@ public class Principal extends javax.swing.JFrame {
         destinosMenu = new javax.swing.JMenu();
         nuevoDestinoMenuItem = new javax.swing.JMenuItem();
         verDestinosMenuItem = new javax.swing.JMenuItem();
+        loadFileDestMenuItem = new javax.swing.JMenuItem();
         rutasMenu = new javax.swing.JMenu();
         nuevaRutaMenuItem = new javax.swing.JMenuItem();
         editarRutaMenuItem = new javax.swing.JMenuItem();
         verRutasMenuItem = new javax.swing.JMenuItem();
+        loadFileRouteMenuItem = new javax.swing.JMenuItem();
         reservacionMenu = new javax.swing.JMenu();
         aboutMenu = new javax.swing.JMenu();
         informacionMenuItem = new javax.swing.JMenuItem();
@@ -90,6 +107,14 @@ public class Principal extends javax.swing.JFrame {
         });
         destinosMenu.add(verDestinosMenuItem);
 
+        loadFileDestMenuItem.setText("Cargar Archivo");
+        loadFileDestMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadFileDestMenuItemActionPerformed(evt);
+            }
+        });
+        destinosMenu.add(loadFileDestMenuItem);
+
         jMenuBar1.add(destinosMenu);
 
         rutasMenu.setText("Rutas");
@@ -117,6 +142,14 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         rutasMenu.add(verRutasMenuItem);
+
+        loadFileRouteMenuItem.setText("Cargar Archivo");
+        loadFileRouteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadFileRouteMenuItemActionPerformed(evt);
+            }
+        });
+        rutasMenu.add(loadFileRouteMenuItem);
 
         jMenuBar1.add(rutasMenu);
 
@@ -163,14 +196,14 @@ public class Principal extends javax.swing.JFrame {
 
     private void verDestinosMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verDestinosMenuItemActionPerformed
         try {
-            myTree.treeGraphPrueba();
+            myTree.treeGraph();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_verDestinosMenuItemActionPerformed
 
     private void nuevaRutaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaRutaMenuItemActionPerformed
-        // TODO add your handling code here:
+        newRout.setVisible(true);
     }//GEN-LAST:event_nuevaRutaMenuItemActionPerformed
 
     private void editarRutaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarRutaMenuItemActionPerformed
@@ -178,12 +211,44 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_editarRutaMenuItemActionPerformed
 
     private void verRutasMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verRutasMenuItemActionPerformed
-        // TODO add your handling code here:
+        newTR.printMatrix();
     }//GEN-LAST:event_verRutasMenuItemActionPerformed
 
     private void informacionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_informacionMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, "Create by:\nAngel Racancoj 201631547\nVersion: 0.1 Beta", "Error", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Create by:\nAngel Racancoj 201631547\nVersion: 0.1 Beta", "Información", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_informacionMenuItemActionPerformed
+
+    private void loadFileDestMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadFileDestMenuItemActionPerformed
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Open .mcf file");
+        if (dialogo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            path = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                myLex.yyreset(new StringReader(files.lecturaArchivo(path)));
+                myParse.parse();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_loadFileDestMenuItemActionPerformed
+
+    private void loadFileRouteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadFileRouteMenuItemActionPerformed
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Open .mcf file");
+        if (dialogo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            path = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                myLex.yyreset(new StringReader(files.lecturaArchivo(path)));
+                myParse.parse();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_loadFileRouteMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutMenu;
@@ -193,6 +258,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JMenuItem loadFileDestMenuItem;
+    private javax.swing.JMenuItem loadFileRouteMenuItem;
     private javax.swing.JMenuItem nuevaRutaMenuItem;
     private javax.swing.JMenuItem nuevoDestinoMenuItem;
     private javax.swing.JMenu reservacionMenu;

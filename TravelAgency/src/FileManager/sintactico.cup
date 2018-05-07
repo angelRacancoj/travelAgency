@@ -5,11 +5,11 @@ import travelagency.Structure.bTree;
 
 parser code {:
 
-	private Btree newTree;
+	private bTree newTree;
 
-	public parser(Lexer lex ,Btree tree) {
+	public parser(Lexer lex ,bTree myTree) {
 		super(lex);
-		this.newTree = tree;
+		this.newTree = myTree;
 	}
 
 	public void syntax_error(Symbol cur_token) {
@@ -24,17 +24,19 @@ parser code {:
 
 /*TERMINAL*/
 
-terminal String longName, code, cost, coma;
+terminal String Name, codeD, cost, coma, Enter;
 
-start with INICIO, DESTINO, RUTAS;
+non terminal String INICIO, DESTINO, RUTAS; 
+
+start with INICIO;
 
 INICIO	::= DESTINO INICIO
 			| RUTAS INICIO
 			| DESTINO
 			| RUTAS
-			| error:e {: System.out.println("Error al declarar la importacion"); :} 
+			| error:e {: System.out.println("Error durante la lectura del archivo"); :} 
 			;
 
-DESTINO ::= code:e1 coma longName:e2 {: newTree.addNode(e1, e2); :};
+DESTINO ::= codeD:e1 coma Name:e2 Enter{: newTree.addNode(e1, e2); :};
 
-RUTAS 	::= code:e1 coma code:e2 coma cost:e3 coma code:e4 {: newTree.addTR(e1, e2, e3, c4); :};
+RUTAS 	::= codeD:e1 coma codeD:e2 coma cost:e3 coma codeD:e4 Enter{: newTree.addTR(e1, e2, e3, e4); :};

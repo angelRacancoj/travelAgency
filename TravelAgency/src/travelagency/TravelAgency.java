@@ -5,6 +5,7 @@
  */
 package travelagency;
 
+import frontIn.Principal;
 import java.io.IOException;
 import travelManager.travelAndRoute;
 import travelagency.Structure.bTree;
@@ -21,9 +22,12 @@ public class TravelAgency {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         travelAndRoute newTR = new travelAndRoute();
         bTree myTree = new bTree(5, newTR);
         hashTable newHT = new hashTable();
+
+        Principal inicio = new Principal(newTR, myTree, newHT);
 
         try {
             myTree.addNode(25, "A");
@@ -59,48 +63,49 @@ public class TravelAgency {
             System.out.println(e);
         }
 
-        try {
-            myTree.addTR(25, 31, 250.25, 50);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(1, 2, 150, 180);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(11, 2, 75.9, 60);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(100, 31, 250.25, 50);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(25, 2, 185, 120);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(11, 99, 190, 75);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
-        try {
-            myTree.addTR(4, 7, 100.25, 120);
-        } catch (errorException e) {
-            System.out.println(e);
-        }
+        inicio.setVisible(true);
 
-        try {
+//        try {
+//            myTree.addTR(25, 31, 250.25, 50);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(1, 2, 150, 180);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(11, 2, 75.9, 60);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(100, 31, 250.25, 50);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(25, 2, 185, 120);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(11, 99, 190, 75);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
+//            myTree.addTR(4, 7, 100.25, 120);
+//        } catch (errorException e) {
+//            System.out.println(e);
+//        }
+//        try {
 //            myTree.treeGraph();
-            myTree.treeGraphPrueba();
-        } catch (IOException e) {
-            System.out.println("Error: " + e);
-        }
+//            myTree.treeGraphPrueba();
+//        } catch (IOException e) {
+//            System.out.println("Error: " + e);
+//        }
     }
 
 }

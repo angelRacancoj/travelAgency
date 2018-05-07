@@ -118,6 +118,8 @@ public class newDestiny extends javax.swing.JFrame {
             if (!codeFormattedTextField.getText().replaceAll(" ", "").replaceAll("\t", "").isEmpty() && !nameTextField.getText().replaceAll(" ", "").replaceAll("\t", "").isEmpty()) {
                 if (!tree.existNode(Integer.valueOf(codeFormattedTextField.getText()))) {
                     tree.addNode(Integer.valueOf(codeFormattedTextField.getText()), nameTextField.getText());
+                    this.setVisible(false);
+                    JOptionPane.showMessageDialog(this, "Destino agregado exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     clear();
                     JOptionPane.showMessageDialog(this, "ya existe el nodo, intente con un nuevo codigo", "Error", JOptionPane.ERROR_MESSAGE);
