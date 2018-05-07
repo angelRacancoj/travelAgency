@@ -7,9 +7,7 @@ package travelagency.Structure;
 
 import FileManager.ManejadorArchivo;
 import FileManager.Order;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 import travelManager.travelAndRoute;
 import travelagency.exceptions.errorException;
@@ -45,7 +43,41 @@ public class bTree {
         printTreeInorder(this.root);
     }
 
+    /**
+     * this method is designed to be used in frames
+     *
+     * @param code1
+     * @param code2
+     * @param price
+     * @param time
+     * @throws errorException
+     */
     public void addTR(int code1, int code2, double price, int time) throws errorException {
+        destiny auxA = RecursiveExistNodeEj(root, code1, 0);
+        destiny auxB = RecursiveExistNodeEj(root, code2, 0);
+
+        if ((auxA != null) && (auxB != null)) {
+            travelList.setRoute(auxA, auxB, code1, code2, price, time);
+        } else {
+            throw new errorException("Invalid codes: " + code1 + ", " + code2);
+        }
+    }
+
+    /**
+     * This method was designed to be used in the entry file
+     *
+     * @param code1In
+     * @param code2In
+     * @param priceIn
+     * @param timeIn
+     * @throws errorException
+     */
+    public void addTR(String code1In, String code2In, String priceIn, String timeIn) throws errorException {
+        int code1 = Integer.parseInt(code1In);
+        int code2 = Integer.parseInt(code2In);
+        double price = Double.parseDouble(priceIn);
+        int time = Integer.parseInt(timeIn);
+
         destiny auxA = RecursiveExistNodeEj(root, code1, 0);
         destiny auxB = RecursiveExistNodeEj(root, code2, 0);
 
@@ -74,7 +106,45 @@ public class bTree {
         }
     }
 
+    /**
+     * this method is designed to be use in the frames
+     *
+     * @param code
+     * @param name
+     * @throws errorException
+     */
     public void addNode(int code, String name) throws errorException {
+
+        destiny newDestiny = new destiny(code, name, 0);
+        Bnode aux = new Bnode(order);
+        aux.destinys.add(newDestiny);
+        if (root.isDestinyListEmpty()) {
+            root.addDestiny(newDestiny);
+            travelList.addRows(numNodes);
+            numNodes++;
+        } else {
+            if (!existNode(code)) {
+                newDestiny.setPosicion(numNodes);
+                addNodeEmpty(root, aux, code, 0);
+                travelList.addRows(numNodes);
+                numNodes++;
+            } else {
+                throw new errorException("Node: " + code + ", " + name + " already exist");
+            }
+        }
+
+    }
+
+    /**
+     * this method take all data as an String to add to the tree
+     *
+     * @param codeSt
+     * @param name
+     * @throws errorException
+     */
+    public void addNode(String codeSt, String name) throws errorException {
+
+        int code = Integer.valueOf(codeSt);
 
         destiny newDestiny = new destiny(code, name, 0);
         Bnode aux = new Bnode(order);
@@ -292,48 +362,37 @@ public class bTree {
      *
      * @throws IOException
      */
-    public void treeGraph() throws IOException {
+    public void treeGraphLR() throws IOException {
         textOut = "";
-        textOut = "digraph G { \nnode [shape = record,height=.1];\n";
+        textOut = "digraph G { \ngraph [rankdir = \"LR\"];\nnode [shape = record,height=.1];\n";
         treeText(root);
         textOut += "}";
         files.guardarArchivo("/home/angel/grafica.dot", textOut);
 
-        String s = "";
+        files.runGraphviz("/home/angel/grafica");
+    }
 
-        try {
+    public void treeGraph() throws IOException {
+        textOut = "";
+        textOut = "digraph G {\nnode [shape = record,height=.1];\n";
+        treeText(root);
+        textOut += "}";
+        files.guardarArchivo("/home/angel/grafica1.dot", textOut);
 
-            // run the Unix "ps -ef" command
-            Process p = Runtime.getRuntime().exec("dot -Tpng /home/angel/grafica.dot -o /home/angel/grafica.png");
+        files.runGraphviz("/home/angel/grafica1");
+    }
 
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+    public void treeGraphPrueba() throws IOException {
+        textOut = "";
+        textOut = "digraph G {\nsubgraph cluster1{\nnode [shape = record,height=.1];\n";
+        treeText(root);
+        textOut += "}\n";
+        textOut += "subgraph cluster2{ \ngraph [rankdir = \"LR\"];\nnode [shape = record,height=.1];\n";
+        treeTextLR(root);
+        textOut += "}\n}";
+        files.guardarArchivo("/home/angel/grafica.dot", textOut);
 
-            // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-            }
-        } catch (IOException e) {
-            System.out.println("exception happened - here's what I know: " + e);
-            System.exit(-1);
-        }
-
-        try {
-
-            // run the Unix "ps -ef" command
-            Process p = Runtime.getRuntime().exec("nohup display /home/angel/grafica.png &");
-
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-            // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-            }
-        } catch (IOException e) {
-            System.out.println("exception happened - here's what I know: " + e);
-            System.exit(-1);
-        }
+        files.runGraphviz("/home/angel/grafica");
     }
 
     private void treeText(Bnode readNode) {
@@ -350,8 +409,27 @@ public class bTree {
         }
         for (int j = 0; j < readNode.getNodes().size(); j++) {
             textOut += ("\"node" + readNode.getDestiny(0).getName() + readNode.getDestiny(0).getCode()
-                    + "\":f1 -- \"node" + readNode.getBnode(j).getDestiny(0).getName() + readNode.getBnode(j).getDestiny(0).getCode() + "\":f0;\n");
+                    + "\":f1 -> \"node" + readNode.getBnode(j).getDestiny(0).getName() + readNode.getBnode(j).getDestiny(0).getCode() + "\":f0;\n");
             treeText(readNode.getBnode(j));
+        }
+    }
+
+    private void treeTextLR(Bnode readNode) {
+        textOut += ("node" + readNode.getDestiny(0).getName() + readNode.getDestiny(0).getCode() + "LR [shape=record, label = \"");
+        for (int i = 0; i < readNode.getDestinys().size(); i++) {
+            readNode.getDestiny(i).printIt();
+            if (i == 0) {
+                textOut += ("{<f0>" + readNode.getDestiny(i).getName() + "|<f1>" + readNode.getDestiny(i).getCode() + "}|");
+            } else if (i != (readNode.getDestinys().size() - 1)) {
+                textOut += ("{" + readNode.getDestiny(i).getName() + "|" + readNode.getDestiny(i).getCode() + "}|");
+            } else {
+                textOut += ("{" + readNode.getDestiny(i).getName() + "|" + readNode.getDestiny(i).getCode() + "}\"];\n");
+            }
+        }
+        for (int j = 0; j < readNode.getNodes().size(); j++) {
+            textOut += ("\"node" + readNode.getDestiny(0).getName() + readNode.getDestiny(0).getCode()
+                    + "LR\":f1 -> \"node" + readNode.getBnode(j).getDestiny(0).getName() + readNode.getBnode(j).getDestiny(0).getCode() + "LR\":f0;\n");
+            treeTextLR(readNode.getBnode(j));
         }
     }
 

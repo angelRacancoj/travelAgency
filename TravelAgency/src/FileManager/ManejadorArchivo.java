@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -57,5 +58,43 @@ public class ManejadorArchivo {
             textoSalida += letra;
         }
         return textoSalida;
+    }
+
+    public void runGraphviz(String path) {
+        String s = "";
+
+        try {
+
+            // run the Unix "ps -ef" command
+            Process p = Runtime.getRuntime().exec("dot -Tpng " + path + ".dot -o /home/angel/grafica.png");
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: " + e);
+            System.exit(-1);
+        }
+
+        try {
+
+            // run the Unix "ps -ef" command
+            Process p = Runtime.getRuntime().exec("nohup display " + path + ".png &");
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: " + e);
+            System.exit(-1);
+        }
     }
 }

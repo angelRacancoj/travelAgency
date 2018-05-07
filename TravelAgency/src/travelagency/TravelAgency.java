@@ -5,9 +5,7 @@
  */
 package travelagency;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import travelManager.travelAndRoute;
 import travelagency.Structure.bTree;
 import travelagency.Structure.hashTable;
@@ -98,7 +96,8 @@ public class TravelAgency {
         }
 
         try {
-            myTree.treeGraph();
+//            myTree.treeGraph();
+            myTree.treeGraphPrueba();
         } catch (IOException e) {
             System.out.println("Error: " + e);
         }

@@ -1,0 +1,40 @@
+package FileManager;
+
+import java_cup.runtime.*;
+import travelagency.Structure.bTree;
+
+parser code {:
+
+	private Btree newTree;
+
+	public parser(Lexer lex ,Btree tree) {
+		super(lex);
+		this.newTree = tree;
+	}
+
+	public void syntax_error(Symbol cur_token) {
+		String message = "Estructura invalida en posición " + cur_token.right
+			 + ", token: " + cur_token.value;
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<");	 
+		System.out.println(message);
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	}
+
+:}
+
+/*TERMINAL*/
+
+terminal String longName, code, cost, coma;
+
+start with INICIO, DESTINO, RUTAS;
+
+INICIO	::= DESTINO INICIO
+			| RUTAS INICIO
+			| DESTINO
+			| RUTAS
+			| error:e {: System.out.println("Error al declarar la importacion"); :} 
+			;
+
+DESTINO ::= code:e1 coma longName:e2 {: newTree.addNode(e1, e2); :};
+
+RUTAS 	::= code:e1 coma code:e2 coma cost:e3 coma code:e4 {: newTree.addTR(e1, e2, e3, c4); :};
