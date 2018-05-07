@@ -14,28 +14,37 @@ public class reservacion {
     String clientName;
     int noReservacion;
 
+    destiny init;
+    destiny end;
+
     route route1;
     route route2;
     route route3;
 
-    public reservacion(String clientName, int noReservacion, route route1, route route2, route route3) {
+    public reservacion(String clientName, int noReservacion, destiny init, destiny end, route route1, route route2, route route3) {
         this.clientName = clientName;
         this.noReservacion = noReservacion;
+        this.init = init;
+        this.end = end;
         this.route1 = route1;
         this.route2 = route2;
         this.route3 = route3;
     }
 
-    public reservacion(String clientName, int noReservacion, route route1, route route2) {
+    public reservacion(String clientName, int noReservacion, destiny init, destiny end, route route1, route route2) {
         this.clientName = clientName;
         this.noReservacion = noReservacion;
+        this.init = init;
+        this.end = end;
         this.route1 = route1;
         this.route2 = route2;
     }
 
-    public reservacion(String clientName, int noReservacion, route route1) {
+    public reservacion(String clientName, int noReservacion, destiny init, destiny end, route route1) {
         this.clientName = clientName;
         this.noReservacion = noReservacion;
+        this.init = init;
+        this.end = end;
         this.route1 = route1;
     }
 

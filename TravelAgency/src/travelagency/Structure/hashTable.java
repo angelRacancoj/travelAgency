@@ -29,44 +29,49 @@ public class hashTable {
         }
     }
 
-    private void setReservacion(reservacion newRS) throws errorException {
-        int posicion = newRS.getNoReservacion() % tableSize;
-        if (isEmpty(posicion) && (getReservacion(posicion) == null)) {
-            RSlist.get(posicion).setClientName(newRS.getClientName());
-            RSlist.get(posicion).setNoReservacion(newRS.getNoReservacion());
-            RSlist.get(posicion).setRoute1(newRS.getRoute1());
-            if (newRS.getRoute2() != null) {
-                RSlist.get(posicion).setRoute2(newRS.getRoute2());
-            }
-
-            if (newRS.getRoute3() != null) {
-                RSlist.get(posicion).setRoute3(newRS.getRoute2());
-            }
+    public void setReservacion(reservacion newRS) throws errorException {
+        if (isTableFull()) {
+            reHash();
+            setReservacion(newRS);
         } else {
-            int i = 1;
-            int newPosicion = 0;
-            do {
-                newPosicion = (newRS.getNoReservacion() + 2 * i) % tableSize;
-
-                if (isEmpty(newPosicion)) {
-                    RSlist.get(newPosicion).setClientName(newRS.getClientName());
-                    RSlist.get(newPosicion).setNoReservacion(newRS.getNoReservacion());
-                    RSlist.get(newPosicion).setRoute1(newRS.getRoute1());
-                    if (newRS.getRoute2() != null) {
-                        RSlist.get(newPosicion).setRoute2(newRS.getRoute2());
-                    }
-
-                    if (newRS.getRoute3() != null) {
-                        RSlist.get(newPosicion).setRoute3(newRS.getRoute2());
-                    }
-                    break;
+            int posicion = newRS.getNoReservacion() % tableSize;
+            if (isEmpty(posicion) && (getReservacion(posicion) == null)) {
+                RSlist.get(posicion).setClientName(newRS.getClientName());
+                RSlist.get(posicion).setNoReservacion(newRS.getNoReservacion());
+                RSlist.get(posicion).setRoute1(newRS.getRoute1());
+                if (newRS.getRoute2() != null) {
+                    RSlist.get(posicion).setRoute2(newRS.getRoute2());
                 }
-                i++;
 
-            } while (newPosicion < tableSize);
+                if (newRS.getRoute3() != null) {
+                    RSlist.get(posicion).setRoute3(newRS.getRoute2());
+                }
+            } else {
+                int i = 1;
+                int newPosicion = 0;
+                do {
+                    newPosicion = (newRS.getNoReservacion() + 2 * i) % tableSize;
 
-            if (newPosicion > tableSize) {
-                throw new errorException("can't add the reservacion, table almost full");
+                    if (isEmpty(newPosicion)) {
+                        RSlist.get(newPosicion).setClientName(newRS.getClientName());
+                        RSlist.get(newPosicion).setNoReservacion(newRS.getNoReservacion());
+                        RSlist.get(newPosicion).setRoute1(newRS.getRoute1());
+                        if (newRS.getRoute2() != null) {
+                            RSlist.get(newPosicion).setRoute2(newRS.getRoute2());
+                        }
+
+                        if (newRS.getRoute3() != null) {
+                            RSlist.get(newPosicion).setRoute3(newRS.getRoute2());
+                        }
+                        break;
+                    }
+                    i++;
+
+                } while (newPosicion < tableSize);
+
+                if (newPosicion > tableSize) {
+                    throw new errorException("can't add the reservacion, table almost full");
+                }
             }
         }
     }
@@ -97,8 +102,16 @@ public class hashTable {
         }
     }
 
-    private void reHash() {
+    private void reHash() throws errorException {
+        LinkedList<reservacion> auxList = new LinkedList<>();
+        auxList.addAll(RSlist);
+        tableSize = RSlist.size() * 2;
+        RSlist.clear();
+        setInitSize();
 
+        for (int i = 0; i < auxList.size(); i++) {
+            setReservacion(auxList.get(i));
+        }
     }
 
     public boolean isTableFull() {

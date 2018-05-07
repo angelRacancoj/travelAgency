@@ -5,8 +5,12 @@
  */
 package travelagency;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import travelManager.travelAndRoute;
 import travelagency.Structure.bTree;
+import travelagency.Structure.hashTable;
 import travelagency.exceptions.errorException;
 
 /**
@@ -21,6 +25,8 @@ public class TravelAgency {
     public static void main(String[] args) {
         travelAndRoute newTR = new travelAndRoute();
         bTree myTree = new bTree(5, newTR);
+        hashTable newHT = new hashTable();
+
         try {
             myTree.addNode(25, "A");
             myTree.addNode(31, "B");
@@ -91,10 +97,11 @@ public class TravelAgency {
             System.out.println(e);
         }
 
-        myTree.printBtree();
-        System.out.println(">>>>>>> Nodes: " + myTree.getNumNodes() + " <<<<<<<<<");
-
-        newTR.printMatrix();
+        try {
+            myTree.treeGraph();
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+        }
     }
 
 }

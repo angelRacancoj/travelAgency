@@ -5,7 +5,11 @@
  */
 package travelagency.Structure;
 
+import FileManager.ManejadorArchivo;
 import FileManager.Order;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import travelManager.travelAndRoute;
 import travelagency.exceptions.errorException;
@@ -16,6 +20,9 @@ import travelagency.objects.destiny;
  * @author angel
  */
 public class bTree {
+
+    String textOut = "";
+    ManejadorArchivo files;
 
     int numNodes;
     int order;
@@ -31,6 +38,7 @@ public class bTree {
         this.organize = new Order();
         numNodes = 0;
         this.travelList = newTR;
+        files = new ManejadorArchivo();
     }
 
     public void printBtree() {
@@ -276,6 +284,74 @@ public class bTree {
                 nodeIn.addBnode(auxBnodeRoot.getNodes());
                 nodeIn.addAllDestiny(auxBnodeRoot.getDestinys());
             }
+        }
+    }
+
+    /**
+     * show the bTree using graph
+     *
+     * @throws IOException
+     */
+    public void treeGraph() throws IOException {
+        textOut = "";
+        textOut = "digraph G { \nnode [shape = record,height=.1];\n";
+        treeText(root);
+        textOut += "}";
+        files.guardarArchivo("/home/angel/grafica.dot", textOut);
+
+        String s = "";
+
+        try {
+
+            // run the Unix "ps -ef" command
+            Process p = Runtime.getRuntime().exec("dot -Tpng /home/angel/grafica.dot -o /home/angel/grafica.png");
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: " + e);
+            System.exit(-1);
+        }
+
+        try {
+
+            // run the Unix "ps -ef" command
+            Process p = Runtime.getRuntime().exec("nohup display /home/angel/grafica.png &");
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            System.out.println("exception happened - here's what I know: " + e);
+            System.exit(-1);
+        }
+    }
+
+    private void treeText(Bnode readNode) {
+        textOut += ("node" + readNode.getDestiny(0).getName() + readNode.getDestiny(0).getCode() + "[shape=record, label = \"");
+        for (int i = 0; i < readNode.getDestinys().size(); i++) {
+            readNode.getDestiny(i).printIt();
+            if (i == 0) {
+                textOut += ("{<f0>" + readNode.getDestiny(i).getName() + "|<f1>" + readNode.getDestiny(i).getCode() + "}|");
+            } else if (i != (readNode.getDestinys().size() - 1)) {
+                textOut += ("{" + readNode.getDestiny(i).getName() + "|" + readNode.getDestiny(i).getCode() + "}|");
+            } else {
+                textOut += ("{" + readNode.getDestiny(i).getName() + "|" + readNode.getDestiny(i).getCode() + "}\"];\n");
+            }
+        }
+        for (int j = 0; j < readNode.getNodes().size(); j++) {
+            textOut += ("\"node" + readNode.getDestiny(0).getName() + readNode.getDestiny(0).getCode()
+                    + "\":f1 -- \"node" + readNode.getBnode(j).getDestiny(0).getName() + readNode.getBnode(j).getDestiny(0).getCode() + "\":f0;\n");
+            treeText(readNode.getBnode(j));
         }
     }
 
